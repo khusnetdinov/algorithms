@@ -23,7 +23,7 @@ function readNumber() {
 }
 
 function getSum(a, b) {
-    // Ваше решение
+  return a + b;
 }
 
 function solve() {
