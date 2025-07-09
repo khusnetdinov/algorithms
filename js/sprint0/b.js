@@ -15,6 +15,14 @@ process.stdin.on('end', solve);
 
 function zip(a, b) {
     // Ваше решение
+    let result = [];
+
+    for(let index = 0; index < size; index++) {
+      result.push(a[index]);
+      result.push(b[index]);
+    }
+
+    return result;
 }
 
 function solve() {
