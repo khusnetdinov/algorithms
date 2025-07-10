@@ -13,8 +13,12 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/22449/run-report/140040412/
 function evaluateFunction(x, a, b, c) {
     // Ваше решение
+    // console.log(`X = ${ x }, A = ${ a }, B = ${ b }, C = ${c }`);
+
+    return a * x * x + b * x + c;
 }
 
 function solve() {

@@ -13,8 +13,19 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/22449/problems/B/?success=140041469#51450/2020_11_13/KooQ6zUghr
 function checkParity(a, b, c) {
     // Ваше решение
+    // console.log(`A = ${ a }, B = ${ b }, C = ${c }`);
+    const numbers = [a, b, c];
+    // console.log(`[] = ${ numbers }`);
+
+    const parities = numbers.map(number => number % 2 === 0);
+    // console.log(`Parity = ${ parities }`);
+
+    const isSameParity = new Set(parities).size == 1;
+
+    return isSameParity;
 }
 
 function solve() {
