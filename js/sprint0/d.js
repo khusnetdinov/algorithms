@@ -15,8 +15,35 @@ process.stdin.on('end', solve);
 
 // Если ответ существует, верните список из двух элементов
 // Если нет - то верните пустой список 
-function twoSum(array, targetSum) {
+function twoSum(raw_array, targetSum) {
     // Ваше решение
+    let array = raw_array.sort((a, b) => a - b);
+    // console.log(`Array: ${ array }`);
+    let left_index = 0;
+    let right_index = array.length - 1;
+
+    while (left_index < right_index) {
+        const left = array[left_index];
+        const right = array[right_index];
+        const currentSum =  left + right;
+        // console.log("------");
+        // console.log(`Left: ${ left_index }`);
+        // console.log(`Right: ${ right_index }`);
+
+        if (currentSum === targetSum) {
+            // console.log(`Sum = ${ currentSum } === Target ${ targetSum }`);
+            return [array[left_index], array[right_index]];
+        } else if (currentSum < targetSum) {
+            // console.log(`Sum = ${ currentSum } < Target ${ targetSum }`);
+            left_index += 1;
+        } else if (currentSum > targetSum) {
+            // console.log(`Sum = ${ currentSum } > Target ${ targetSum }`);
+            right_index -= 1;
+            // console.log("------");
+        }
+    }
+
+    return [];
 }
 
 function solve() {
