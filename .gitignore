@@ -2,3 +2,4 @@
 *.swp
 .idea
 run.sh
+rust/sprint0/target
