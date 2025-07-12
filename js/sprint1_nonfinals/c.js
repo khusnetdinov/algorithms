@@ -13,6 +13,8 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+
+// https://contest.yandex.ru/contest/22449/problems/C/?success=140095271#2989/2020_04_21/PMefBHIZqd
 function getNeighbours(matrix, row, col) {
     // Ваше решение
     let rowsCount = matrix.length;
