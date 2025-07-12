@@ -13,8 +13,32 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/22449/problems/E/?success=140096620#3484683/2020_11_16/bDCqWy22Oq
 function getLongestWord(length, line) {
     // Ваше решение
+    const SPACE = ' ';
+    let longestWord = ''
+    let currentWord = ''
+
+    for (let index = 0; index < line.length; index += 1) {
+        // console.log(`Index = ${ index }, Char = ${ line[index] } current = ${ currentWord }, longest = ${ longestWord }`);
+
+        if (line[index] === SPACE) {
+            if (currentWord.length > longestWord.length) {
+                longestWord = currentWord
+            }
+
+            currentWord = '';
+        } else {
+            currentWord += line[index]
+        }
+    }
+
+    if (currentWord.length > longestWord.length) {
+        longestWord = currentWord
+    }
+
+    return longestWord;
 }
 
 function solve() {
