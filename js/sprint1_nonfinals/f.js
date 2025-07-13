@@ -13,8 +13,37 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+function isNumOrString(char) {
+    return /^[a-zA-Z0-9]+$/.test(char)
+}
+
 function isPalindrome(line) {
     // Ваше решение
+    let result = true;
+    let left_index = 0;
+    let right_index = line.length - 1;
+
+    if (line.length === 1) return result;
+
+    while (left_index < right_index) {
+        // console.log(`Left = ${ left_index }, Right = ${ right_index }`);
+
+        if (isNumOrString(line[left_index]) && isNumOrString(line[right_index])) {
+            if (line[left_index].toLocaleLowerCase() === line[right_index].toLocaleLowerCase()) {
+                left_index += 1;
+                right_index -= 1;
+            } else {
+                result = false;
+
+                break
+            }
+        } else {
+            if (!isNumOrString(line[left_index])) left_index += 1;
+            if (!isNumOrString(line[right_index])) right_index -= 1;
+        }
+    }
+
+    return result;
 }
 
 function solve() {
