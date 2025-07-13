@@ -13,8 +13,16 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/22449/problems/I/?success=140120183#2989/2020_04_14/y8KrjDymCP
 function isPowerOfFour(number) {
     // Ваше решение
+    if (number <= 0) {
+        return false;
+    }
+    while (number % 4 === 0) {
+        number = Math.floor(number / 4);
+    }
+    return number === 1;
 }
 
 function solve() {
