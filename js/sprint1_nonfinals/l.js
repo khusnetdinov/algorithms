@@ -13,8 +13,39 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/22449/problems/L/?success=140130106#2989/2020_04_14/KQUhHWBJrB
 function getExcessiveLetter(firstLine, secondLine) {
     // Ваше решение
+    let result = {};
+
+    for (let index = 0; index < firstLine.length; index += 1) {
+        let char = firstLine[index];
+
+        if (char in result) {
+            result[char] = result[char] + 1;
+        } else {
+            result[char] = 1;
+        }
+    }
+
+    for (let index = 0; index < secondLine.length; index += 1) {
+        let char = secondLine[index];
+
+        if (char in result) {
+            if (result[char] === 1) {
+                delete result[char];
+            } else {
+                result[char] = result[char] - 1;
+            }
+        } else {
+            result[char] = -1;
+        }
+    }
+
+    let keys = Object.keys(result);
+    // console.log(JSON.stringify(keys));
+
+    return keys;
 }
 
 function solve() {
