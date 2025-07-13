@@ -13,8 +13,24 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/22449/problems/G/?success=140110633#2989/2020_04_14/LQj1AqJHrD
 function getBinaryNumber(number) {
     // Ваше решение
+    let result = '';
+    let divisible = number;
+
+    if (number === 0) return 0;
+
+    while (divisible > 0) {
+        // console.log(`Result = ${ result }, Divisible = ${ divisible }`);
+
+        result = (divisible % 2).toString() + result;
+        divisible = Math.floor(divisible / 2)
+    }
+
+    // console.log(`Result = ${ result }, Divisible = ${ divisible }`);
+
+    return result;
 }
 
 function solve() {
