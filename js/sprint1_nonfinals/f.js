@@ -17,6 +17,7 @@ function isNumOrString(char) {
     return /^[a-zA-Z0-9]+$/.test(char)
 }
 
+// https://contest.yandex.ru/contest/22449/problems/F/?success=140110027#2989/2020_04_13/OKMm72e4Dn
 function isPalindrome(line) {
     // Ваше решение
     let result = true;
