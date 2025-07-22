@@ -1,3 +1,4 @@
+https://contest.yandex.ru/contest/22450/run-report/140372717/
 const _readline = require('readline');
 
 const _reader = _readline.createInterface({
@@ -13,82 +14,24 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-// https://contest.yandex.ru/contest/22450/problems/A/?success=140192558#51450/2020_11_13/VxxSc5X0LZ
 function getNearestZero(collection) {
     // Ваше решение
-    // console.log(`Collection = ${ collection }`);
+    let maxDistance = collection.length;
+    let result = [...collection];
 
-    let result = [];
-    let leftIndex = 0;
-    let leftCurrentZeroIndex = -1;
-    let fromLeft = []
-    let rightIndex = collection.length - 1;
-    let rightCurrentZeroIndex = -1;
-    let fromRight = []
-
-    if (collection.length === 1) {
-        return [0];
+    if (collection[0] !== 0) {
+        result[0] = maxDistance
     }
 
-    while (leftIndex < collection.length || rightIndex >= 0) {
-        let left = collection[leftIndex];
-        // console.log(`Left ${ left }, Index = ${ leftIndex }, LeftCurrentZeroIndex = ${ leftCurrentZeroIndex }`);
-
-        if (left === 0) {
-            leftCurrentZeroIndex = leftIndex;
-
-            fromLeft[leftIndex] = 0;
-        } else {
-            if (leftCurrentZeroIndex >= 0) {
-                fromLeft[leftIndex] = leftIndex - leftCurrentZeroIndex
-            } else {
-                fromLeft[leftIndex] = leftCurrentZeroIndex
-            }
+    for (let index = 1; index < maxDistance; index += 1) {
+        if (collection[index] !== 0) {
+            result[index] = (result[index - 1] + 1)
         }
-        // console.log(`FromLeft   = ${ fromLeft }`)
-
-        leftIndex += 1;
-
-        let right = collection[rightIndex];
-        // console.log(`Right ${ right }, Index = ${ rightIndex }, rightCurrentZeroIndex = ${ rightCurrentZeroIndex }`);
-
-        if (right === 0) {
-            rightCurrentZeroIndex = rightIndex;
-
-            fromRight[rightIndex] = 0;
-        } else {
-            if (rightCurrentZeroIndex >= 0) {
-                fromRight[rightIndex] = rightCurrentZeroIndex - rightIndex
-            } else {
-                fromRight[rightIndex] = rightCurrentZeroIndex
-            }
-        }
-        // console.log(`FromRight  = ${ fromRight }`)
-
-        rightIndex -= 1
     }
 
-    // console.log(`FromLeft   = ${ fromLeft }`)
-    // console.log(`FromRight  = ${ fromRight }`)
-
-    for (let index = 0; index < collection.length; index += 1) {
-        const left = fromLeft[index];
-        const right = fromRight[index];
-
-        if ((right === left) && (left === 0)) {
-            result[index] = 0
-        } else if ((left > 0) && (right > 0) && left !== right) {
-            if (left > right) {
-                result[index] = right
-            } else {
-                result[index] = left
-            }
-        } else {
-            if (left > 0) {
-                result[index] = left
-            } else {
-                result[index] = right
-            }
+    for (let index = maxDistance - 2; index >= 0; index -= 1) {
+        if (result[index] !== 0) {
+            result[index] = Math.min(result[index], result[index + 1] + 1);
         }
     }
 
@@ -108,7 +51,7 @@ function readInt() {
 }
 
 function readArray() {
-    var arr = _inputLines[_curLine].trim(" ").split(" ").map(num => Number(num));
+    var arr = _inputLines[_curLine].split(" ").map(num => Number(num));
     _curLine++;
     return arr;
 }
