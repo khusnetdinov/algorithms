@@ -7,9 +7,15 @@ if (process.env.REMOTE_JUDGE !== 'true') {
     }
 }
 
+// https://contest.yandex.ru/contest/22779/run-report/140405020/
 function solution(node) {
     // Your code
     // ヽ(´▽`)/
+    let current = node;
+    while (current !== null) {
+        console.log(current.value);
+        current = current.next;
+    }
 }
 
 function test() {
