@@ -7,9 +7,26 @@ if (process.env.REMOTE_JUDGE !== 'true') {
     }
 }
 
+https://contest.yandex.ru/contest/22779/run-report/140418797/
 function solution(node, elem) {
     // Your code
     // ヽ(´▽`)/
+    // Если index = 0
+    let currentNode = node
+    let currentIndex = 0;
+
+    while (currentNode !== null) {
+        if (currentNode.value === elem) {
+            // console.log(currentIndex);
+
+            return currentIndex
+        }
+
+        currentNode = currentNode.next;
+        currentIndex += 1;
+    }
+
+    return -1;
 }
 
 function test() {
