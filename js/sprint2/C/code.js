@@ -6,10 +6,31 @@ if (process.env.REMOTE_JUDGE !== 'true') {
       }
     }
 }
-
-function solution(node, idx) {
+// https://contest.yandex.ru/contest/22779/run-report/140409753/
+function solution(head, index) {
     // Your code
     // ヽ(´▽`)/
+    // Если index = 0
+    if (index === 0) {
+        return head.next
+    }
+
+    let currentNode = head
+    let currentIndex = 0;
+
+    while (currentNode !== null && currentIndex < index - 1) {
+        currentNode = currentNode.next;
+        currentIndex += 1;
+    }
+
+    // Если дошли до конца и не нашли index
+    if (currentNode === null || currentNode.next === null) {
+        return head
+    }
+
+    currentNode.next = currentNode.next.next
+
+    return head
 }
 
 function test() {
