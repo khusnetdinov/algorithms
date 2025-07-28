@@ -13,54 +13,6 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class MyQueueSized {
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
-    }
-
-    put(value) {
-        const newNode = new Node(value);
-
-        if (this.tail) {
-            this.tail.next = newNode;
-        } else {
-            this.head = newNode;
-        }
-
-        this.tail = newNode;
-        this.length += 1;
-    }
-
-    get() {
-        if (!this.head) {
-            return 'error';
-        }
-
-        const value = this.head.value;
-        this.head = this.head.next;
-
-        if (!this.head) {
-            this.tail = null;
-        }
-
-        this.length -= 1;
-        return value;
-    }
-
-    size() {
-        return this.length
-    }
-}
-
 // https://contest.yandex.ru/contest/22779/run-report/140524124/
 function fibo(number) {
     // Ваше решение
