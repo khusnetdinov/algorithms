@@ -1,4 +1,4 @@
-// https://contest.yandex.ru/contest/22450/run-report/140366447/
+// https://contest.yandex.ru/contest/22781/run-report/140602913/
 const _readline = require('readline');
 const _reader = _readline.createInterface({
     input: process.stdin
@@ -13,57 +13,64 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-function getScores(keys, board) {
+// Алгоритм постфиксной нотации на стеке
+// На вход подается массив строк.
+// Если строка может быть кастована в число, то мы кладем на стек.
+// Если строка не может быть кастована -> считаем, что это операция
+// Берем со стека 2 числа и выполняем операцию
+// результат назад в стек, т/к у нас должно быть всегда 2 числа на стеке, чтоб можно было выполнить операцию
+// В конце останется один резeзультат
+// Временная сложность: зависит от количества элементов в строке, O(tokens.lenght), O(n), в любом случае мы должны пройти все элементы. Операции на стеке O(1)
+// Пространственная сложность: O(n) - зависимость от количества токенов, в нотации количество чисел будет всегда на 1 больше чем операций 1 1 +,
+// может быть, что на стеке половина + 1 числа, и числа - 1 элемент операторов можно предположить что 0(n/2) -> 0(n)
+function calculate(tokens) {
     // Ваше решение
-    const PLAYERS = 2;
-    const MAX_GAMES = 9;
+    let stack = [];
 
-    let result = 0
-    let keyboard = board.flat();
-    let buttonCounted = {}
+    // Операция прохода O(n)
+    for (const token of tokens) {
+        // Проверяем, что токен число или операция
+        if (isNaN(token)) {
+            let result = 0;
 
-    for (let index = 0; index < keyboard.length; index += 1) {
-        let button = keyboard[index];
+            // Достаем O(1)
+            const right = stack.pop();
+            const left = stack.pop()
 
-        buttonCounted[button] = (buttonCounted[button] ?? 0) + 1
-    }
-
-    for (let gameTry = 1; gameTry < MAX_GAMES + 1; gameTry += 1) {
-        if (gameTry in buttonCounted) {
-            const requiredButtonsPushed = buttonCounted[gameTry];
-
-            if (requiredButtonsPushed <= PLAYERS * keys) {
-                result += 1;
+            switch (token) {
+                case '+':
+                    result = left + right;
+                    break;
+                case '-':
+                    result = left - right;
+                    break;
+                case '*':
+                    result = left * right;
+                    break;
+                case '/':
+                    result = Math.floor(left / right);
+                    break;
             }
+
+            // Кладем O(1)
+            stack.push(result);
+        } else {
+            // Кладем O(1)
+            stack.push(parseInt(token, 10))
         }
     }
 
-    return result;
+    return stack.pop();
 }
 
 function solve() {
-    const k = readInt();
-    const board = readMatrix(4);
+    const tokens = readLine();
 
-    process.stdout.write(`${getScores(k, board)}`);
+    process.stdout.write(`${ calculate(tokens.split(' ')) }`);
 }
 
-function readInt() {
-    const n = Number(_inputLines[_curLine]);
+function readLine() {
+    const line = _inputLines[_curLine];
     _curLine++;
-    return n;
-}
-
-function readArray() {
-    var arr = _inputLines[_curLine].trim().split("");
-    _curLine++;
-    return arr;
-}
-
-function readMatrix(rowsCount) {
-    var arr = [];
-    for (let i = 0; i !== rowsCount; i++) {
-        arr.push(readArray())
-    }
-    return arr;
+    return line;
 }
