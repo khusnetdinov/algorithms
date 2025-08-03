@@ -1,4 +1,4 @@
-// https://contest.yandex.ru/contest/22781/run-report/140601147/
+// https://contest.yandex.ru/contest/22781/run-report/140683154/
 
 const _readline = require('readline');
 

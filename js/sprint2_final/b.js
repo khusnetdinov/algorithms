@@ -1,4 +1,4 @@
-// https://contest.yandex.ru/contest/22781/run-report/140602913/
+// https://contest.yandex.ru/contest/22781/run-report/140683188/
 const _readline = require('readline');
 const _reader = _readline.createInterface({
     input: process.stdin
