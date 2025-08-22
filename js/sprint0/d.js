@@ -43,6 +43,20 @@ function twoSum(raw_array, targetSum) {
         }
     }
 
+    // const previous = new Set();
+    //
+    // for (const number of raw_array) {
+    //     const last = targetSum - number;
+    //
+    //     // Если Y уже лежит в previous, то вернуть A, Y
+    //     if (previous.has(last)) {
+    //         return [last, number];
+    //     }
+    //
+    //     // Иначе добавить A в previous
+    //     previous.add(number);
+    // }
+
     return [];
 }
 
