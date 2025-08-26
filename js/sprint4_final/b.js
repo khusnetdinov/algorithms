@@ -1,4 +1,4 @@
-// https://contest.yandex.ru/contest/24414/run-report/141502409/
+// https://contest.yandex.ru/contest/24414/run-report/141572504/
 const _readline = require('readline');
 
 const _reader = _readline.createInterface({
@@ -45,7 +45,10 @@ process.stdin.on('end', solve);
  * -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
  * В среднем случае (равномерное распределение): O(1) для всех операций
  * В худшем случае (все ключи в одной ячейке): O(n) для операций с списком
- * Хэш-функция: O(L) где L - длина ключа
+ *  Общая временная сложность: O(n + k + l)) ~ 0(n) где:
+ *   - n: количество команд
+ *   - k: длина ключа
+ *   - l: длина LinkedList
  *
  * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
  * O(n + m) где:
@@ -65,122 +68,123 @@ class LinkedList {
     constructor() {
         this.head = null;
     }
-}
 
-LinkedList.prototype.append = function(key, value) {
-    const newNode = new ListNode(key, value);
-    if (!this.head) {
-        this.head = newNode;
-        return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-        current = current.next;
-    }
-    current.next = newNode;
-}
-
-LinkedList.prototype.find = function(key) {
-    let current = this.head;
-    while (current) {
-        if (current.key === key) {
-            return current;
+    append(key, value) {
+        const newNode = new ListNode(key, value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-        current = current.next;
-    }
-    return null;
-}
 
-LinkedList.prototype.update = function(key, value) {
-    const node = this.find(key);
-    if (node) {
-        node.value = value;
-        return value;
-    }
-    return null;
-}
-
-LinkedList.prototype.delete = function(key) {
-    if (!this.head) return null;
-
-    if (this.head.key === key) {
-        const value = this.head.value;
-        this.head = this.head.next;
-
-        return value;
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    let current = this.head;
-    while (current.next) {
-        if (current.next.key === key) {
-            const value = current.next.value;
-            current.next = current.next.next;
+    find(key) {
+        let current = this.head;
+        while (current) {
+            if (current.key === key) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    updateByKey(key, value) {
+        const node = this.find(key);
+        if (node) {
+            node.value = value;
+            return value;
+        }
+        return null;
+    }
+
+    delete(key) {
+        if (!this.head) return null;
+
+        if (this.head.key === key) {
+            const value = this.head.value;
+            this.head = this.head.next;
 
             return value;
         }
-        current = current.next;
-    }
 
-    return null;
+        let current = this.head;
+        while (current.next) {
+            if (current.next.key === key) {
+                const value = current.next.value;
+                current.next = current.next.next;
+
+                return value;
+            }
+            current = current.next;
+        }
+
+        return null;
+    }
 }
 
 class HashTable {
-    constructor(size = 100000, base = 31, module = size + 3) {
+    constructor(size = 230000, base = 31, module = 230001) {
         this.base = base;
         this.module = module;
         this.size = size;
         this.table = new Array(size);
     }
-}
 
-HashTable.prototype._hashFunction = function (key) {
-    let hash = 0;
-    let power = 1;
+    _hashFunction(key) {
+        let keyString = key.toString()
+        let hash = 0;
+        let power = 1;
 
-    for (let index = key.length - 1; index >= 0; index -= 1) {
-        hash = (hash + key.charCodeAt(index) * power) % this.module;
-        power = (power * this.base) % this.module;
+        for (let index = keyString.length - 1; index >= 0; index -= 1) {
+            hash = (hash + keyString.charCodeAt(index) * power) % this.module;
+            power = (power * this.base) % this.module;
+        }
+
+        return hash % this.size;
     }
 
-    return hash % this.size;
-}
+    put(key, value) {
+        const index = this._hashFunction(key);
+        const list = this.table[index] || (this.table[index] = new LinkedList());
 
-HashTable.prototype.put = function(key, value) {
-    const index = this._hashFunction(key);
-    const list = this.table[index] || (this.table[index] = new LinkedList());
-
-    if (!list.update(key, value)) {
-        list.append(key, value);
-    }
-}
-
-HashTable.prototype.get = function(key) {
-    const index = this._hashFunction(key);
-
-    if (this.table[index]) {
-        let node = this.table[index].find(key)
-
-        if (node) {
-            return node.value
+        if (!list.updateByKey(key, value)) {
+            list.append(key, value);
         }
     }
 
-    return null
-}
+    get(key) {
+        const index = this._hashFunction(key);
 
-HashTable.prototype.delete = function(key) {
-    const index = this._hashFunction(key);
+        if (this.table[index]) {
+            let node = this.table[index].find(key)
 
-    if (this.table[index]) {
-        let value = this.table[index].delete(key)
-
-        if (value) {
-            return value
+            if (node) {
+                return node.value
+            }
         }
+
+        return null
     }
 
-    return null
+    delete(key) {
+        const index = this._hashFunction(key);
+
+        if (this.table[index]) {
+            let value = this.table[index].delete(key)
+
+            if (value) {
+                return value
+            }
+        }
+
+        return null
+    }
 }
 
 function execute(commands) {
@@ -191,16 +195,18 @@ function execute(commands) {
         const command = commandString.split(' ')
 
         if (command[0] === 'put') {
-            const key = command[1]
-            const value = command[2]
+            const key = parseInt(command[1], 10);
+            const value = parseInt(command[2], 10)
 
             hashTable.put(key, value)
         } else if (command[0] === 'get') {
-            const result = hashTable.get(command[1])
+            const key = parseInt(command[1], 10);
+            const result = hashTable.get(key)
 
             results.push(result ? result : 'None')
         } else if (command[0] === 'delete') {
-            const result = hashTable.delete(command[1])
+            const key = parseInt(command[1], 10);
+            const result = hashTable.delete(key)
 
             results.push(result ? result : 'None')
         }
