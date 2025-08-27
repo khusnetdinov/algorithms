@@ -42,18 +42,21 @@ process.stdin.on('end', solve);
  *   - D - количество документов на входе
  *   - W - количество слов в документе
  *
- * Обработка запроса: O(Q × (QW × QW + QW)) ~ O(Q × QW × QW), где:
+ * Обработка запроса: O(Q × (QW + 5 × D) ~ O(Q × (QW + D)), где:
  *   - Q - количество запросов
- *   - QW - количество слов в запросе (в худшем варианте все слова из запроса в индексе)
+ *   - QW - количество слов в запросе
+ *   - D - количество документов на входе
  *
- * Общая сложность: O(D × W + Q × QW × QW)
+ * Общая сложность: O(D × W + Q × (QW + D))
  *
  * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
- * O(W) для хранения индекса, где:
- *   - W - количество слов
+ * O(D × W) для хранения индекса, где:
+ *   - D - количество документов на входе
+ *   - W - количество слов в документе
  *
- * O(Q) для хранения промежуточных результатов при обработке запроса
- *   - Q - количество слов в запросе
+ * O(Q × QW) для хранения результатов при обработке запроса
+ *   - Q - количество запросов
+ *   - QW - количество слов в запросе
  *
  * Общая сложность O(W + Q)
  */
@@ -88,12 +91,24 @@ function search(documents, queries) {
             }
         }
 
-        const scoredDocs = Array.from(documentScores.entries())
-            .sort((prev, next) => next[1] - prev[1] || prev[0] - next[0])
-            .slice(0, 5)
-            .map(([documentId]) => documentId + 1)
+        const top5 = [];
+        for (const [documentId, score] of documentScores) {
+            const candidate = { documentId, score };
 
-        results.push(scoredDocs.join(' '));
+            let inserted = false;
+            for (let index = 0; index < top5.length; index += 1) {
+                if (score > top5[index].score || (score === top5[index].score && documentId < top5[index].documentId)) {
+                    top5.splice(index, 0, candidate);
+                    inserted = true;
+                    break;
+                }
+            }
+
+            if (!inserted && top5.length < 5) top5.push(candidate);
+            if (top5.length > 5) top5.pop();
+        }
+
+        results.push(top5.map(item => item.documentId + 1).join(' '));
     }
 
     return results
