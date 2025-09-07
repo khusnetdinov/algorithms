@@ -7,9 +7,21 @@ if (process.env.REMOTE_JUDGE !== 'true') {
         }
     }
 }
+// https://contest.yandex.ru/contest/24809/run-report/141949972/
 
 function solution(root) {
     // Your code
+    let result = root.value
+
+    if (root.left) {
+        result = Math.max(result, solution(root.left))
+    }
+
+    if (root.right) {
+        result = Math.max(result, solution(root.right))
+    }
+
+    return result
     // “ヽ(´▽｀)ノ”
 }
 
