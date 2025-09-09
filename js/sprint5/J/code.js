@@ -8,11 +8,23 @@ if (process.env.REMOTE_JUDGE !== 'true') {
     }
 }
 
-function insert(node, key) {
-    // Your code
-    // “ヽ(´▽｀)ノ”
-}
+// https://contest.yandex.ru/contest/24809/run-report/142066733/
 
+function insert(node, value) {
+    // Ваш код
+    if (node === null) {
+        return new Node(value)
+    }
+
+    if (value < node.value) {
+        node.left = insert(node.left, value)
+    } else {
+        node.right = insert(node.right, value)
+    }
+
+    return node
+    // «ヽ(´▽｀)ノ»
+}
 function test() {
     var node1 = new Node(7, null, null);
     var node2 = new Node(8, node1, null);
