@@ -8,8 +8,21 @@ if (process.env.REMOTE_JUDGE !== 'true') {
     }
 }
 
-function printRange(root, left, right) {
+// https://contest.yandex.ru/contest/24809/run-report/142062552/
+
+function printRange(root, min, max) {
     // Your code
+    if (root.left && root.value >= min) {
+        printRange(root.left, min, max)
+    }
+
+    if (root.value >= min && root.value <= max) {
+        process.stdout.write(`${ root.value } `);
+    }
+
+    if (root.right && root.value <= max) {
+        printRange(root.right, min, max)
+    }
     // “ヽ(´▽｀)ノ”
 }
 
