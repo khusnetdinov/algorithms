@@ -7,10 +7,29 @@ if (process.env.REMOTE_JUDGE !== 'true') {
         }
     }
 }
+// https://contest.yandex.ru/contest/24809/run-report/142182015/
 
 function solution(root) {
-    // Your code
-    // “ヽ(´▽｀)ノ”
+    function isBalanced(node) {
+        if (node === null) {
+            return [true, 0];
+        }
+
+        let [leftIsBalanced, leftHeight] = isBalanced(node.left);
+        let [rightIsBalanced, rightHeight] = isBalanced(node.right);
+
+        if (!leftIsBalanced || !rightIsBalanced) {
+            return [false, 0];
+        }
+
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return [false, 0];
+        }
+
+        return [true, Math.max(leftHeight, rightHeight) + 1];
+    }
+
+    return isBalanced(root)[0];
 }
 
 function test() {
