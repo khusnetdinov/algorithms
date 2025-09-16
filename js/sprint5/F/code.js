@@ -1,4 +1,4 @@
-if (process.env.REMOTE_JUDGE !== 'true') {
+// if (process.env.REMOTE_JUDGE !== 'true') {
     class CNode {
         constructor(value, left = null, right = null) {
             this.value = value;
@@ -6,11 +6,21 @@ if (process.env.REMOTE_JUDGE !== 'true') {
             this.right = right;
         }
     }
-}
+// }
 
+// https://contest.yandex.ru/contest/24809/run-report/142430925/
 
 function solution(root) {
     // Your code
+    function maxDeep(root, deep) {
+        if (root === null) {
+            return deep
+        }
+
+        return Math.max(maxDeep(root.left, deep + 1), maxDeep(root.right, deep + 1))
+    }
+
+    return maxDeep(root, 0)
     // “ヽ(´▽｀)ノ”
 }
 
