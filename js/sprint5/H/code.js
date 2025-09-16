@@ -1,16 +1,41 @@
-if (process.env.REMOTE_JUDGE !== 'true') {
-    class CNode {
-        constructor(value, left = null, right = null) {
-            this.value = value;
-            this.left = left;
-            this.right = right;
-        }
+// if (process.env.REMOTE_JUDGE !== 'true') {
+class CNode {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
     }
 }
+// }
+
+// https://contest.yandex.ru/contest/24809/run-report/142433420/
 
 function solution(root) {
-    // Your code
-    // “ヽ(´▽｀)ノ”
+    let totalSum = 0;
+
+    function dfs(node, currentValue) {
+        if (!node) return;
+
+        currentValue = currentValue * 10 + node.value;
+
+        if (!node.left && !node.right) {
+            totalSum += currentValue;
+            return;
+        }
+
+        if (node.left) {
+            dfs(node.left, currentValue);
+        }
+        if (node.right) {
+            dfs(node.right, currentValue);
+        }
+    }
+
+    if (root) {
+        dfs(root, 0);
+    }
+
+    return totalSum;
 }
 
 function test() {
