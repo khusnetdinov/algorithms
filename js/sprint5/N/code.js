@@ -1,4 +1,4 @@
-if (process.env.REMOTE_JUDGE !== 'true') {
+// if (process.env.REMOTE_JUDGE !== 'true') {
     class Node {
         constructor(value, left = null, right = null, size = 0) {
             this.value = value;
@@ -7,12 +7,32 @@ if (process.env.REMOTE_JUDGE !== 'true') {
             this.size = size;
         }
     }
-}
+// }
 
+// https://contest.yandex.ru/contest/24809/run-report/142433750/
 function split(node, k) {
-    // Your code
-    // “ヽ(´▽｀)ノ”
-    return [null, null];
+    if (node === null) {
+        return [null, null];
+    }
+
+    let leftSize = node.left ? node.left.size : 0;
+    if (k <= leftSize) {
+        const [left, right] = split(node.left, k);
+        const newRight = new Node(node.value, null, node.right, 1 + (node.right ? node.right.size : 0));
+        if (right !== null) {
+            newRight.left = right;
+            newRight.size += right.size;
+        }
+        return [left, newRight];
+    } else {
+        const [left, right] = split(node.right, k - leftSize - 1);
+        const newLeft = new Node(node.value, node.left, null, 1 + leftSize);
+        if (left !== null) {
+            newLeft.right = left;
+            newLeft.size += left.size;
+        }
+        return [newLeft, right];
+    }
 }
 
 function test() {
@@ -27,3 +47,5 @@ function test() {
     console.assert(res[0].size === 4);
     console.assert(res[1].size === 2);
 }
+
+test()
