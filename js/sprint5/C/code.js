@@ -8,9 +8,26 @@ if (process.env.REMOTE_JUDGE !== 'true') {
     }
 }
 
-
+// https://contest.yandex.ru/contest/24809/run-report/142429189/
 function solution(root) {
     // Your code
+    if (root === null) {
+        return true
+    }
+
+    function isMirror(left, right) {
+        if (left === null && right === null) {
+            return true
+        }
+
+        if (left === null || right === null) {
+            return false
+        }
+
+        return (left.value === right.value) && isMirror(left.left, right.right) && isMirror(left.right, right.left);
+    }
+
+    return isMirror(root.left, root.right)
     // “ヽ(´▽｀)ノ”
 }
 
@@ -24,3 +41,4 @@ function test() {
     var node7 = new CNode(1, node5, node6);
     console.assert(solution(node7));
 }
+
