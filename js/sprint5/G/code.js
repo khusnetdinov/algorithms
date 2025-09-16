@@ -8,10 +8,24 @@ if (process.env.REMOTE_JUDGE !== 'true') {
     }
 }
 
-
+// https://contest.yandex.ru/contest/24809/run-report/142432611/
 function solution(root) {
-    // Your code
-    // “ヽ(´▽｀)ノ”
+    let maxSum = Number.NEGATIVE_INFINITY;
+
+    function dfs(node) {
+        if (node === null) return 0;
+
+        const leftMax = Math.max(dfs(node.left), 0);
+        const rightMax = Math.max(dfs(node.right), 0);
+
+        const currentMax = node.value + leftMax + rightMax;
+        maxSum = Math.max(maxSum, currentMax);
+
+        return node.value + Math.max(leftMax, rightMax);
+    }
+
+    dfs(root);
+    return maxSum;
 }
 
 function test() {
