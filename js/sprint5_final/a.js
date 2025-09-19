@@ -1,6 +1,28 @@
-// https://contest.yandex.ru/contest/24810/run-report/142644622/
+// https://contest.yandex.ru/contest/24810/run-report/142647243/
 
-
+/*
+* -- ПРИНЦИП РАБОТЫ --
+* Построение кучи:
+* - Создается вспомогательная куча с индексацией от 1 (добавляется null в начало)
+* - Элементы исходного массива последовательно добавляются в кучу
+* - После каждого добавления элемент просеивается вверх с помощью siftUp для сохранения свойств max-кучи
+*
+* Извлечение элементов:
+* - Максимальный элемент (корень кучи) извлекается и помещается в результирующий массив
+* - Последний элемент кучи перемещается в корень
+* - Новый корень просеивается вниз с помощью siftDown для восстановления свойств кучи
+* - Процесс повторяется пока куча не опустеет
+*
+* -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+* - Построение кучи с siftUp: O(n log n) - каждый из n элементов просеивается вверх за O(log n)
+* - Извлечение элементов с siftDown: O(n log n) - n извлечений, каждое за O(log n)
+* - Копирование элементов O(n)
+* - Общая сложность: O(n log n)
+*
+* -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+* - Дополнительная память для sorted массива: O(n)
+* - Общая пространственная сложность: O(n)
+*/
 
 const _readline = require('readline');
 const _reader = _readline.createInterface({
@@ -89,31 +111,32 @@ function siftUp(heap, index) {
 }
 
 function heapSort(collection) {
-    const heap = [null];
-    const size = collection.length;
+    // Your code
+    collection.unshift(null);
+    const size = collection.length - 1;
 
-    for (let index = 0; index < size; index += 1) {
-        heap.push(collection[index]);
-        siftUp(heap, heap.length - 1);
+    for (let index = 2; index <= size; index += 1) {
+        siftUp(collection, index);
     }
 
     const sorted = [];
-    while (heap.length > 1) {
-        sorted.push(heap[1]);
+    for (let index = size; index >= 1; index -= 1) {
+        sorted.push(collection[1]);
 
-        if (heap.length > 2) {
-            heap[1] = heap.pop();
-            siftDown(heap, 1);
-        } else {
-            heap.pop();
+        if (index > 1) {
+            collection[1] = collection.pop();
+            siftDown(collection, 1);
         }
     }
 
-    for (let index = 0; index < size; index += 1) {
+    collection.shift();
+
+    for (let index = 0; index < sorted.length; index += 1) {
         collection[index] = sorted[index];
     }
 
     return collection;
+    // “ヽ(´▽｀)ノ”
 }
 
 function solve() {
