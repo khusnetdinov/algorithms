@@ -13,6 +13,8 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+// https://contest.yandex.ru/contest/25069/run-report/143479556/
+
 const WHITE = -1;
 const GRAY = 0;
 const BLACK = 1;
