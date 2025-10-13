@@ -2,26 +2,23 @@
 
 /*
 * -- ПРИНЦИП РАБОТЫ --
-* Алгоритм вычисления расстояния Левенштейна (редакционного расстояния) между двумя строками:
-* - Используется динамическое программирование с двумерной таблицей dp[i][j]
-* - dp[i][j] хранит минимальное количество операций для преобразования префикса первой строки длины i в префикс второй строки длины j
-* - Базовые случаи:
-*   * dp[i][0] = i (удалить i символов из первой строки)
-*   * dp[0][j] = j (вставить j символов во вторую строку)
-* - Для каждой пары символов рассматриваются 3 операции:
-*   * Удаление (dp[i - 1][j] + 1)
-*   * Вставка (dp[i][j - 1] + 1)
-*   * Замена (dp[i - 1][j - 1] + 1, если символы разные)
-* - Если символы совпадают, стоимость замены = 0
-*
+* Алгоритм вычисления расстояния Левенштейна между двумя строками:
+* - previousRow хранит результаты для предыдущей строки (dp[i-1][j])
+* - currentRow вычисляет результаты для текущей строки (dp[i][j])
+* Базовые случаи:
+* - previousRow[j] = j (преобразование пустой строки в префикс длины j)
+* - currentRow[0] = i (преобразование префикса длины i в пустую строку)
+* Для каждой пары символов рассматриваются 3 операции:
+* - Удаление (previousRow[j] + 1)
+* - Вставка (currentRow[j - 1] + 1)
+* - Замена (previousRow[j - 1] + cost), где cost = 0 если символы совпадают, иначе 1
+
 * -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
-* - Заполнение таблицы размером (n + 1) × (m + 1), где n и m - длины строк
-* - Каждая ячейка заполняется за O(1) операций
-* - Общая временная сложность: O(n × m)
-*
+* - Общая временная сложность: O(n × m), где n и m - длины строк
+
 * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
-* - Используется двумерный массив размером (n + 1) × (m + 1)
-* - Пространственная сложность: O(n × m)
+* - Пространственная сложность: O(min(n, m))
+* - где n и m - длины строк
 */
 
 const _readline = require('readline');
@@ -38,32 +35,39 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
-
 function levenshteinDistance(string, target) {
-    const dp = Array.from({ length: string.length + 1 }, () => new Array(target.length + 1).fill(0));
+    const stringLength = string.length;
+    const targetLength = target.length;
 
-    for (let stringIndex = 0; stringIndex <= string.length; stringIndex += 1) {
-        dp[stringIndex][0] = stringIndex;
-    }
-    for (let targetIndex = 0; targetIndex <= target.length; targetIndex += 1) {
-        dp[0][targetIndex] = targetIndex;
+    if (stringLength === 0) return targetLength;
+    if (targetLength === 0) return stringLength;
+
+    let previousRow = new Array(targetLength + 1);
+    let currentRow = new Array(targetLength + 1);
+
+    for (let targetIndex = 0; targetIndex <= targetLength; targetIndex += 1) {
+        previousRow[targetIndex] = targetIndex;
     }
 
-    for (let stringIndex = 1; stringIndex <= string.length; stringIndex += 1) {
-        for (let targetIndex = 1; targetIndex <= target.length; targetIndex += 1) {
+    for (let stringIndex = 1; stringIndex <= stringLength; stringIndex += 1) {
+        currentRow[0] = stringIndex;
+
+        for (let targetIndex = 1; targetIndex <= targetLength; targetIndex += 1) {
             if (string[stringIndex - 1] === target[targetIndex - 1]) {
-                dp[stringIndex][targetIndex] = dp[stringIndex - 1][targetIndex - 1];
+                currentRow[targetIndex] = previousRow[targetIndex - 1];
             } else {
-                const deleteAction = dp[stringIndex - 1][targetIndex];
-                const insertAction = dp[stringIndex][targetIndex - 1];
-                const updateAction = dp[stringIndex - 1][targetIndex - 1];
+                const deleteAction = previousRow[targetIndex];
+                const insertAction = currentRow[targetIndex - 1];
+                const updateAction = previousRow[targetIndex - 1];
 
-                dp[stringIndex][targetIndex] = 1 + Math.min(deleteAction, insertAction, updateAction);
+                currentRow[targetIndex] = 1 + Math.min(deleteAction, insertAction, updateAction);
             }
         }
+
+        [previousRow, currentRow] = [currentRow, previousRow];
     }
 
-    return dp[string.length][target.length];
+    return previousRow[targetLength];
 }
 
 function solve() {
