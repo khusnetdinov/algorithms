@@ -14,6 +14,6 @@
 * Sprint6:Final: https://contest.yandex.ru/contest/25070/problems/?nc=sD0j9Tq1
 * Sprint7: https://contest.yandex.ru/contest/25596/problems/
 * Sprint7Final: https://contest.yandex.ru/contest/25597/problems/?nc=a7qPBOER
-* Sprint8:
-* Sprint8Final
+* Sprint8:https://contest.yandex.ru/contest/26131/problems
+* Sprint8Final:https://contest.yandex.ru/contest/26133/problems/?nc=O3I9x7s7
 * Собеседование: https://contest.yandex.ru/contest/34147/problems/?nc=qy00ijly
