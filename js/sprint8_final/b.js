@@ -1,22 +1,34 @@
-// https://contest.yandex.ru/contest/26133/problems/B/#51450/2020_07_21/q5eMaCPDPy
+// https://contest.yandex.ru/contest/26133/run-report/146114842/
 
 /*
 * -- ПРИНЦИП РАБОТЫ --
-* Используется динамическое программирование:
-* - dp[i] = true, если первые i символов строки можно разбить на слова
-* - Начинаем с dp[0] = true (пустая строка всегда разбивается)
-* - Для каждой позиции i проверяем все слова из списка:
-*   Если слово длины L заканчивается на позиции i И dp[i - L] = true (префикс до слова разбивается), тогда dp[i] = true, гдe:
-*   l - средняя длина слова
-
+* Алгоритм использует префиксное дерево (Trie) для эффективного поиска слов в тексте и динамическое программирование для проверки возможности разбиения.
+*
+* 1. ПРЕФИКСНОЕ ДЕРЕВО (Trie):
+* - Строится дерево, где каждый узел представляет символ, а путь от корня до узла образует префикс слова
+* - Конец слова помечается флагом isEndOfWord
+* - Метод find(text, start) находит все слова из словаря, которые начинаются с позиции start в тексте
+*
+* 2. ДИНАМИЧЕСКОЕ ПРОГРАММИРОВАНИЕ:
+* - dp[i] = true, если префикс текста длиной i можно разбить на слова из словаря
+* - База: dp[0] = true (пустая строка всегда разбивается)
+* - Для каждой позиции i, где dp[i] = true, ищем все слова, начинающиеся с этой позиции
+*
 * -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
-* - O(n * m * l), где:
-*   n - длина текста
-*   m - количество слов
-*   l - средняя длина слова
-
+* - Построение Trie: O(m * l) - вставка m слов максимальной длины l
+* - Заполнение dp массива: O(n * l) - для каждой из n позиций в худшем случае проверяем l символов в Trie
+* - Общая: O(m * l + n * l) ~ O((m + n) * l) , где:
+*   n - длина текста T
+*   m - количество слов в словаре
+*   l - максимальная длина слова
+*
 * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
-* - O(n) - массив dp длиной n + 1
+* - Память для Trie: O(m * l) - в худшем случае все слова не имеют общих префиксов
+* - Массив dp: O(n)
+* - Общая: O(m * l + n), где:
+*   n - длина текста T
+*   m - количество слов в словаре
+*   l - максимальная длина слова
 */
 
 const _readline = require('readline');
@@ -33,20 +45,65 @@ _reader.on('line', line => {
 
 process.stdin.on('end', solve);
 
+class TrieNode {
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+    }
+}
+
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    insert(word) {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char);
+        }
+        node.isEndOfWord = true;
+    }
+
+    find(text, start) {
+        const result = [];
+        let node = this.root;
+
+        for (let index = start; index < text.length; index += 1) {
+            const char = text[index];
+            if (!node.children.has(char)) {
+                break;
+            }
+            node = node.children.get(char);
+            if (node.isEndOfWord) {
+                result.push(index - start + 1);
+            }
+        }
+
+        return result;
+    }
+}
+
 function canSegmentText(text, words) {
     const dp = new Array(text.length + 1).fill(false);
     dp[0] = true;
 
-    for (let index = 1; index <= text.length; index += 1) {
-        if (dp[index]) continue;
 
-        for (const word of words) {
-            const wordLen = word.length;
-            if (index < wordLen) continue;
+    const trie = new Trie();
+    for (const word of words) {
+        trie.insert(word);
+    }
 
-            if (dp[index - wordLen] && text.substring(index - wordLen, index) === word) {
-                dp[index] = true;
-                break;
+    for (let index = 0; index <= text.length; index += 1) {
+        if (!dp[index]) continue;
+
+        const wordLengths = trie.find(text, index);
+        for (const wordLen of wordLengths) {
+            if (index + wordLen <= text.length) {
+                dp[index + wordLen] = true;
             }
         }
     }
