@@ -1,4 +1,4 @@
-// https://contest.yandex.ru/contest/26133/run-report/145853400/
+// https://contest.yandex.ru/contest/26133/run-report/145987962/
 
 /*
 * -- ПРИНЦИП РАБОТЫ --
@@ -12,28 +12,22 @@
 * - При встрече ']': из стека извлекается предыдущее состояние и текущая строка повторяется нужное количество раз
 * - Буквы и цифры обрабатываются по мере чтения строки
 *
-* 2. ПОИСК ОБЩЕГО ПРЕФИКСА
-* После распаковки всех строк:
-* - Находим минимальную длину среди всех распакованных строк
-* - Последовательно сравниваем символы на одинаковых позициях во всех строках
-* - Как только находим несовпадение - останавливаемся
-* - Собираем общую часть до первого несовпадения
+* 2. ПОСЛЕДОВАТЕЛЬНЫЙ ПОИСК ОБЩЕГО ПРЕФИКСА
+* - Распаковываем первую строку и используем её как начальный префикс
+* - Для каждой следующей строки находим общий префикс между текущим префиксом и распакованной строкой
+* - Обновляем текущий префикс или если префикс становится пустым - досрочно завершаем обработку
 
 * -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
-*
-* Пусть:
-* - Распаковка одной строки: O(l)
-* - Распаковка всех строк: O(n * l)
-* - Поиск общего префикса: O(n * m)
-* - ОБЩАЯ: O(n * l + n * m) ~ O(n * l + n * l) ~ O(n * l), где
+*   Общая сложность будет O(n * (l + l)) ~ O(n * l)
+* - где:
 *   n - количество строк
 *   l - максимальная длина распакованной строки
-*   m - длина найденного общего префикса
 
 * -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
 * - Распаковка одной строки: O(l)
 * - Хранение всех распакованных строк: O(n × l)
-* - ОБЩАЯ: O(n × l), где
+* - Общая сложность: O(n × l)
+* - где:
 *   n - количество строк
 *   l - максимальная длина распакованной строки
 */
@@ -78,24 +72,41 @@ function unpack(string) {
     return currentString;
 }
 
-function packedPrefix(collection) {
-    const unpacked = collection.map(unpack)
-    // console.log(unpacked)
+function findCommonPrefix(string, target) {
+    const minLength = Math.min(string.length, target.length);
+    let commonLength = 0;
 
-    const minLength = Math.min(...unpacked.map(s => s.length));
-
-    let prefix = '';
     for (let index = 0; index < minLength; index += 1) {
-        const currentChar = unpacked[0][index];
-
-        if (unpacked.every(s => s[index] === currentChar)) {
-            prefix += currentChar;
+        if (string[index] === target[index]) {
+            commonLength += 1;
         } else {
             break;
         }
     }
 
-    return prefix;
+    return string.substring(0, commonLength);
+}
+
+function packedPrefix(collection) {
+    if (collection.length === 0) return '';
+
+    // ~
+    let currentPrefix = unpack(collection[0]);
+
+    // O(collection)
+    for (let index = 1; index < collection.length; index += 1) {
+        if (currentPrefix.length === 0) {
+            break;
+        }
+
+        // O(unpack(collection[index]).length)
+        const nextString = unpack(collection[index]);
+
+        // O(unpack(collection[index]).length)
+        currentPrefix = findCommonPrefix(currentPrefix, nextString);
+    }
+
+    return currentPrefix;
 }
 
 function solve() {
