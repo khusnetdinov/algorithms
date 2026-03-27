@@ -64,13 +64,12 @@ function recursionDfs(verticesCount, edges, startVertex) {
 
     const result = []
     const visited = Array.from({ length: verticesCount + 1 }).fill(false);
+
     function dfs(startVertex) {
         visited[startVertex] = true
         result.push(startVertex)
 
-        const outgoingVertexes = adjacencyList[startVertex]
-
-        for (const nextVertex of outgoingVertexes ) {
+        for (const nextVertex of adjacencyList[startVertex] ) {
             if (!visited[nextVertex]) {
                 dfs(nextVertex)
             }
